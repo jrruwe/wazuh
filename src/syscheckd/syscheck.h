@@ -29,6 +29,14 @@
 extern syscheck_config syscheck;
 extern int sys_debug_level;
 
+/* Win32 does not have lstat */
+#ifdef WIN32
+    #define w_stat(x, y) stat(x, &y)
+#else
+    #define w_stat(x, y) lstat(x, &y)
+#endif
+
+
 /** Function Prototypes **/
 
 /* Check the integrity of the files against the saved database */

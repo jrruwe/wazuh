@@ -61,6 +61,10 @@
 
 #include <stdio.h>
 #include "os_regex/os_regex.h"
+#include "os_crypto/md5/md5_op.h"
+#include "os_crypto/md5_sha1/md5_sha1_op.h"
+#include "os_crypto/md5_sha1_sha256/md5_sha1_sha256_op.h"
+
 
 #ifdef WIN32
 typedef struct whodata_event_node whodata_event_node;
@@ -96,7 +100,6 @@ typedef struct whodata_evt {
     unsigned int mask;
     int dir_position;
     char deleted;
-    char ignore_not_exist;
     char ignore_remove_event;
     char scan_directory;
     whodata_event_node *wnode;
@@ -171,6 +174,25 @@ typedef struct syscheck_node {
     int dir_position;
 } syscheck_node;
 
+typedef struct fim_status{
+    unsigned int symbolic_links;
+    unsigned int num_files;
+} fim_status;
+
+typedef struct fim_data {
+    unsigned int size;
+    unsigned int perm;
+    unsigned int uid;
+    unsigned int gid;
+    char * user_name;
+    char * group_name;
+    unsigned int mtime;
+    unsigned int inode;
+    os_md5 hash_md5;
+    os_sha1 hash_sha1;
+    os_sha256 hash_sha256;
+} fim_data;
+
 typedef struct _config {
     unsigned int tsleep;            /* sleep for sometime for daemon to settle */
     int sleep_after;
@@ -234,6 +256,7 @@ typedef struct _config {
     rtfim *realtime;
 
     char *prefilter_cmd;
+    struct fim_status data;
 
 } syscheck_config;
 

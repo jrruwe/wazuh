@@ -667,7 +667,6 @@ unsigned long WINAPI whodata_callback(EVT_SUBSCRIBE_NOTIFY_ACTION action, __attr
                 w_evt->scan_directory = is_directory;
                 w_evt->ignore_remove_event = ignore_remove_event;
                 w_evt->deleted = 0;
-                w_evt->ignore_not_exist = 0;
                 w_evt->ppid = -1;
                 w_evt->wnode = whodata_list_add(strdup(hash_id));
 

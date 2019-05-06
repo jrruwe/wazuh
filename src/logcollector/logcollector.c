@@ -1333,14 +1333,26 @@ int check_pattern_expand(int do_seek) {
                     /* Match wildcard */
                     char *regex = NULL;
                     regex = wstr_replace(wildcard,".","\\p");
+                    os_free(regex);
                     regex = wstr_replace(wildcard,"*","\\.*");
+
+                    /* Add the starting ^ regex */
+                    if (regex[0] != '\\' && regex[1] != '.' && regex[2] != '*') {
+                        char p[PATH_MAX] = {0};
+                        snprintf(p,PATH_MAX,"^%s",regex);
+                        os_free(regex);
+                        os_strdup(p,regex);
+                    }
 
                     /* If wildcard is only \.* add another \.* */
                     if (strlen(regex) == 3) {
-                        regex = wstr_replace(regex,"\\.*","\\.*\\.*");
-                    } 
+                        char *rgx = NULL;
+                        rgx = wstr_replace(regex,"\\.*","\\.*\\.*");
+                        os_free(regex);
+                        regex = rgx;
+                    }
 
-                    if(!OS_Regex(regex,dirent->d_name)) {
+                    if (!OS_Regex(regex,dirent->d_name)) {
                         mdebug2("Regex %s doesn't match with file '%s'",regex,dirent->d_name);
                         os_free(regex);
                         continue;
@@ -2193,11 +2205,23 @@ static void check_pattern_expand_excluded() {
                     /* Match wildcard */
                     char *regex = NULL;
                     regex = wstr_replace(wildcard,".","\\p");
+                    os_free(regex);
                     regex = wstr_replace(wildcard,"*","\\.*");
+
+                    /* Add the starting ^ regex */
+                    if (regex[0] != '\\' && regex[1] != '.' && regex[2] != '*') {
+                        char p[PATH_MAX] = {0};
+                        snprintf(p,PATH_MAX,"^%s",regex);
+                        os_free(regex);
+                        os_strdup(p,regex);
+                    }
 
                     /* If wildcard is only \.* add another \.* */
                     if (strlen(regex) == 3) {
-                        regex = wstr_replace(regex,"\\.*","\\.*\\.*");
+                        char *rgx = NULL;
+                        rgx = wstr_replace(regex,"\\.*","\\.*\\.*");
+                        os_free(regex);
+                        regex = rgx;
                     } 
 
                     if(!OS_Regex(regex,dirent->d_name)) {
